@@ -21,26 +21,27 @@ getSingleCourses = (req, res, next) => {
   })
 };
 createCourse = (req, res, next) => {
-  res
-    .status(200)
-    .json({ success: true, data: { id: 1, messgae: "Created courses" } });
+  const {duration,title} = req.body
+  pool.query(courseQueries.createCourse,[duration,title],(error,result)=>{
+    if(error) throw error;
+    res.status(201).json({message:"created new course successfully"})
+  })
 };
 
 updateCourse = (req, res, next) => {
-  res
-    .status(200)
-    .json({
-      success: true,
-      data: { id: 1, messgae: `updated courses ${req.params.id}` },
-    });
+  const {duration,title} = req.body
+  const id = req.params.id
+  pool.query(courseQueries.updateCourse,[duration,title,id],(error,result)=>{
+    if(error) throw error;
+    res.status(200).json({message:"updated successfully"})
+  })
 };
 deleteCourse = (req, res, next) => {
-  res
-    .status(200)
-    .json({
-      success: true,
-      data: { id: 1, messgae: `deleted courses ${req.params.id}` },
-    });
+  const id = req.params.id
+  pool.query(courseQueries.deleteCourse,[id],(error,result)=>{
+    if(error) throw error;
+    res.status(200).json({message:"deleted successfully"})
+  })
 };
 module.exports = {
   getAllCourses,
