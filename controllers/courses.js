@@ -2,72 +2,80 @@ const courseRepository = require("../repositories/course");
 //@desc to get all courses
 //@route '/api/v1/courses
 //access public
-getAllCourses = (req, res, next) => {
-  courseRepository.getAllCourses().then(
-    (data) => {
-      res.status(200).json(data);
-    },
-    (error) => {
-      res.status(500).json({ message: error.message });
-    }
-  );
+getAllCourses = async (req, res, next) => {
+  try {
+    const courses = await courseRepository.getAllCourses();
+    res.status(200).json({ success: true, data: courses });
+  } catch (error) {
+    next(error);
+  }
 };
 //@desc to course by id
 //@route '/api/v1/courses/:id
 //access public
-getSingleCourses = (req, res, next) => {
+getSingleCourses = async (req, res, next) => {
   const id = req.params.id;
-  courseRepository.getCourseBiId(id).then(
-    (data) => {
-      res.status(200).json(data);
-    },
-    (error) => {
-      res.status(500).json(error.message);
-    }
-  );
+  try {
+    const course = await courseRepository.getCourseBiId(id);
+    res.status(200).json({ success: true, data: course });
+  } catch (error) {
+    next(error);
+  }
 };
-createCourse = (req, res, next) => {
+createCourse = async (req, res, next) => {
   const { duration, title } = req.body;
-  courseRepository.addNewProduct(duration, title).then(
-    (data) => {
-      res.status(200).json({ message: "product added successfully" });
-    },
-    (error) => {
-      res.status(500).json(error.message);
+  try {
+    const created = await courseRepository.addNewProduct(duration, title);
+    if (created) {
+      res.status(201).json({
+        success: true,
+        data: { message: "created course successfully" },
+      });
     }
-  );
+  } catch (error) {
+    next(error);
+  }
 };
 
 updateCourse = async (req, res, next) => {
   const { duration, title } = req.body;
   const id = req.params.id;
-  const existsRecord = await courseRepository.checkRecordExists(id);
-  if (existsRecord) {
-    courseRepository.updateCourse(duration, title, id).then(
-      (data) => {
-        res.status(200).json(`product with id ${id} updated successfully`);
-      },
-      (error) => {
-        res.status(500).json(error.message)
+  try {
+    const existsRecord = await courseRepository.checkRecordExists(id);
+    if (existsRecord) {
+      const updated = await courseRepository.updateCourse(duration, title, id);
+      if (updated) {
+        res.status(200).json({
+          success: true,
+          data: { message: `product with id ${id} updated successfully` },
+        });
       }
-    );
-  }
-  else{
-    res.status(404).json(`product with id ${id} not exists`)
+    } else {
+      res.status(404).json(`product with id ${id} not exists`);
+    }
+  } catch (error) {
+    next(error);
   }
 };
 deleteCourse = async (req, res, next) => {
   const id = req.params.id;
-  const existsRecord = await courseRepository.checkRecordExists(id);
-  if (existsRecord) {
-    courseRepository.deleteCourse(id).then((data)=>{
-      res.status(200).json(data)
-    },(error)=>{
-      res.status(500).json(error.message)
-    })
-  }
-     else
+  try {
+    const existsRecord = await courseRepository.checkRecordExists(id);
+    if (existsRecord) {
+      const deleted = courseRepository.deleteCourse(id);
+      if (deleted) {
+        res
+          .status(200)
+          .json({
+            success: true,
+            data: { message: `Deleted Course with ID: ${id} ` },
+          });
+      }
+    } else
       res.status(404).json({ message: `record does not exists with id ${id}` });
+  } catch (error) {
+    next(error);
+  }
 };
 module.exports = {
   getAllCourses,

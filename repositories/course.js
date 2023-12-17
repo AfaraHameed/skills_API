@@ -70,7 +70,7 @@ deleteCourse = (id)=>{
         reject(error)
       }
      else{
-      resolve(`Deleted Course with ID: ${id} `) 
+      resolve(true) 
      }
   })
 })}

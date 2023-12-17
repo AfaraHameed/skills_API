@@ -1,6 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const logger = require('./middlewares/logger')
+const errorHandler = require('./middlewares/errorHandler')
 
 dotenv.config({ path: "./config/config.env" });
 const app = express();
@@ -18,3 +19,5 @@ app.listen(port, () => {
 });
 const courses = require("./routes/courses");
 app.use("/api/v1/courses", courses);
+app.use(errorHandler)
+
