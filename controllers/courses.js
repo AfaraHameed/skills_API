@@ -1,9 +1,9 @@
-const productRepository = require("../repositories/repositories");
+const courseRepository = require("../repositories/course");
 //@desc to get all courses
 //@route '/api/v1/courses
 //access public
 getAllCourses = (req, res, next) => {
-  productRepository.getAllProducts().then(
+  courseRepository.getAllCourses().then(
     (data) => {
       res.status(200).json(data);
     },
@@ -17,56 +17,57 @@ getAllCourses = (req, res, next) => {
 //access public
 getSingleCourses = (req, res, next) => {
   const id = req.params.id;
-  pool.query(courseQueries.getSingleCourse, [id], (error, result) => {
-    if (error) throw error;
-    if (result.rows.length) res.status(200).json(result.rows);
-    else
-      res.status(404).json({ message: `product does not exist with id ${id}` });
-  });
+  courseRepository.getCourseBiId(id).then(
+    (data) => {
+      res.status(200).json(data);
+    },
+    (error) => {
+      res.status(500).json(error.message);
+    }
+  );
 };
 createCourse = (req, res, next) => {
   const { duration, title } = req.body;
-  pool.query(courseQueries.createCourse, [duration, title], (error, result) => {
-    if (error) throw error;
-    res.status(201).json({ message: "created new course successfully" });
-  });
+  courseRepository.addNewProduct(duration, title).then(
+    (data) => {
+      res.status(200).json({ message: "product added successfully" });
+    },
+    (error) => {
+      res.status(500).json(error.message);
+    }
+  );
 };
 
-updateCourse = (req, res, next) => {
+updateCourse = async (req, res, next) => {
   const { duration, title } = req.body;
   const id = req.params.id;
-  pool.query(courseQueries.getSingleCourse, [id], (error, result) => {
-    if (error) throw error;
-    //const recordExists = result.rows.length > 0;
-    if (result.rows.length) {
-      pool.query(
-        courseQueries.updateCourse,
-        [duration, title, id],
-        (error, result) => {
-          if (error) throw error;
-          res
-            .status(200)
-            .json({ message: `updated product with id ${id} successfully` });
-        }
-      );
-    } else res.status(404).json({ message: `no product exists with id ${id}` });
-  });
+  const existsRecord = await courseRepository.checkRecordExists(id);
+  if (existsRecord) {
+    courseRepository.updateCourse(duration, title, id).then(
+      (data) => {
+        res.status(200).json(`product with id ${id} updated successfully`);
+      },
+      (error) => {
+        res.status(500).json(error.message)
+      }
+    );
+  }
+  else{
+    res.status(404).json(`product with id ${id} not exists`)
+  }
 };
-deleteCourse = (req, res, next) => {
+deleteCourse = async (req, res, next) => {
   const id = req.params.id;
-  pool.query(courseQueries.getSingleCourse, [id], (error, result) => {
-    if (error) throw error;
-    //const recordExists = result.rows.length > 0;
-    if (result.rows.length) {
-      pool.query(courseQueries.deleteCourse, [id], (error, result) => {
-        if (error) throw error;
-        res
-          .status(200)
-          .json({ message: `deleted product with id ${id} successfully` });
-      });
-    } else
+  const existsRecord = await courseRepository.checkRecordExists(id);
+  if (existsRecord) {
+    courseRepository.deleteCourse(id).then((data)=>{
+      res.status(200).json(data)
+    },(error)=>{
+      res.status(500).json(error.message)
+    })
+  }
+     else
       res.status(404).json({ message: `record does not exists with id ${id}` });
-  });
 };
 module.exports = {
   getAllCourses,
