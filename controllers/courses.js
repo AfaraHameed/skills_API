@@ -1,3 +1,4 @@
+const ErrorResponse = require('../utils/errorResponse')
 const courseRepository = require("../repositories/course");
 //@desc to get all courses
 //@route '/api/v1/courses
@@ -51,7 +52,7 @@ updateCourse = async (req, res, next) => {
         });
       }
     } else {
-      res.status(404).json(`product with id ${id} not exists`);
+      next(new ErrorResponse(`Product with ID ${id} not exists`,404))
     }
   } catch (error) {
     next(error);
@@ -72,7 +73,7 @@ deleteCourse = async (req, res, next) => {
           });
       }
     } else
-      res.status(404).json({ message: `record does not exists with id ${id}` });
+    next(new ErrorResponse(`Product with ID ${id} not exists`,404))
   } catch (error) {
     next(error);
   }
