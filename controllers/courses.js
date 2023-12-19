@@ -32,9 +32,7 @@ createCourse = asyncHandler(async (req, res, next) => {
       success: true,
       data: { message: "created course successfully" },
     });
-  } else {
-    next(new ErrorResponse(`product with id ${id} not exists`, 404));
-  }
+  } 
 });
 
 updateCourse = asyncHandler(async (req, res, next) => {

@@ -17,7 +17,10 @@ const port = process.env.PORT || 9000;
 app.listen(port, () => {
   console.log(`running in ${process.env.NODE_ENV} on ${port}`);
 });
+// Routes
+const users = require("./routes/users")
 const courses = require("./routes/courses");
+app.use("/api/v1/users",users)
 app.use("/api/v1/courses", courses);
 app.use(errorHandler)
 
