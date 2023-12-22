@@ -6,4 +6,9 @@ function hashPassword(password) {
   return hash;
 }
 
-module.exports = { hashPassword };
+ function compareWithPassword(plainPassword, hashedPassword) {
+  var isMatching =  bcrypt.compareSync(plainPassword, hashedPassword);
+  console.log("ismatching",isMatching);
+  return isMatching;
+}
+module.exports = { hashPassword, compareWithPassword };
