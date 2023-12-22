@@ -7,8 +7,9 @@ const {
   updateCourse,
   deleteCourse,
 } = require("../controllers/courses");
+const {verifyTokenHandler} = require('../middlewares/jwtHandler')
 
-router.get("/", getAllCourses);
+router.get("/",[verifyTokenHandler], getAllCourses);
 router.post("/", createCourse);
 
 router

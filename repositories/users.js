@@ -10,13 +10,28 @@ addUser = (name,username,password)=>{
           reject(error)
         }
         else{
-          resolve(true)
+          console.log(result.rows)
+          const userId = result.rows ? result.rows[0].id:undefined
+          resolve(userId)
         }
     })
   
   })
   }
 
+ getUserByUsername = (username) => {
+    return new Promise((resolve, reject) => {
+      pool.query(usersQueries.getUserByUsername, [username], (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result.rows);
+        }
+      });
+    });
+  };
+
   module.exports = {
-    addUser
+    addUser,
+    getUserByUsername
   }
