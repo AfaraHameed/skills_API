@@ -26,3 +26,4 @@ const courses = require("./routes/courses");
 app.use("/api/v1/users", users);
 app.use("/api/v1/courses", courses);
 app.use(errorHandler);
+app.use(express.static('public'))
