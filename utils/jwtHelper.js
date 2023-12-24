@@ -1,7 +1,7 @@
 var jwt = require("jsonwebtoken");
 var SECRET = "upcode123";
 function createJwt(userId) {
-  var token = jwt.sign({ useId: userId }, SECRET);
+  var token = jwt.sign({ userId: userId }, SECRET);
   return token;
 }
 
@@ -14,8 +14,8 @@ function verifyToken(token) {
       if (err) {
         reject({ valid: false, error: err });
       } else {
-        console.log("resolved");
-        return resolve({ valid: true, userid: decoded.userid });
+        console.log("resolved",decoded.userId);
+        return resolve({ valid: true, userId: decoded.userId });
       }
     });
   });

@@ -31,7 +31,24 @@ addUser = (name,username,password)=>{
     });
   };
 
+  getRolesByUserId= (userid) => {
+    return new Promise((resolve, reject) => {
+      console.log("userid:",userid);
+      pool.query(usersQueries.getRolesByUserId, [userid], (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          // console.log(result.rows);
+          resolve(result.rows);
+          
+        }
+      });
+    });
+  };
+
+
   module.exports = {
     addUser,
-    getUserByUsername
+    getUserByUsername,
+    getRolesByUserId
   }

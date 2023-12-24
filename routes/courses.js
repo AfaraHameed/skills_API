@@ -7,9 +7,10 @@ const {
   updateCourse,
   deleteCourse,
 } = require("../controllers/courses");
-const {verifyTokenHandler} = require('../middlewares/jwtHandler')
 
-router.get("/",[verifyTokenHandler], getAllCourses);
+const {verifyTokenHandler,verifyRole} = require('../middlewares/jwtHandler')
+
+router.get("/",[verifyTokenHandler,verifyRole('admin')], getAllCourses);
 router.post("/", createCourse);
 
 router
