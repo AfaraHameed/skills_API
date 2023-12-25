@@ -2,7 +2,8 @@ const express = require("express");
 const dotenv = require("dotenv");
 const logger = require("./middlewares/logger");
 const errorHandler = require("./middlewares/errorHandler");
-var cors = require('cors')
+const cors = require('cors')
+const multer = require('multer')
 dotenv.config({ path: "./config/config.env" });
 const app = express();
 
@@ -20,10 +21,28 @@ const port = process.env.PORT || 9000;
 app.listen(port, () => {
   console.log(`running in ${process.env.NODE_ENV} on ${port}`);
 });
+
+
+const storage = multer.diskStorage({
+  destination:(req,file,cb)=>{
+    cb(null,'uploads');
+
+  },
+  filename:(req,file,cb)=>{
+    const filename = Date.now()+" "+file.originalname
+    cb(null,filename)
+  }
+})
+const upload=multer({storage:storage})
 // Routes
 const users = require("./routes/users");
 const courses = require("./routes/courses");
 app.use("/api/v1/users", users);
 app.use("/api/v1/courses", courses);
+app.post('/profile', upload.single('uploadImage') ,(req,res)=>{
+  res.status(200).json("file uploaded successfully")
+})
 app.use(errorHandler);
 app.use(express.static('public'))
+
+
