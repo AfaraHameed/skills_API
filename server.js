@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const logger = require("./middlewares/logger");
 const errorHandler = require("./middlewares/errorHandler");
 const cors = require('cors')
+const path = require('path');
 // const multer = require('multer')
 dotenv.config({ path: "./config/config.env" });
 const app = express();
@@ -22,28 +23,19 @@ app.listen(port, () => {
   console.log(`running in ${process.env.NODE_ENV} on ${port}`);
 });
 
-
-// const storage = multer.diskStorage({
-//   destination:(req,file,cb)=>{
-//     cb(null,'uploads');
-
-//   },
-//   filename:(req,file,cb)=>{
-//     const filename = Date.now()+" "+file.originalname
-//     cb(null,filename)
-//   }
-// })
-// const upload=multer({storage:storage})
 // Routes
+const reportFilePath = path.join(__dirname,"reports/sales_report.pdf")
+console.log(reportFilePath);
 const users = require("./routes/users");
 const courses = require("./routes/courses");
 const profile = require("./routes/profile")
+const downloadFile = require('./routes/download_file')
 app.use("/api/v1/users", users);
 app.use("/api/v1/courses", courses);
 app.use('/profile',profile)
-// app.post('/profile' ,(req,res)=>{
-//   res.status(200).json("file uploaded successfully")
-// })
+app.use('/api/sales-report/pdf',downloadFile)
+
+
 app.use(errorHandler);
 app.use(express.static('public'))
 
