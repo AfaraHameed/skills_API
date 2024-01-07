@@ -1,15 +1,23 @@
 const courseQueries = require("../queries/courses");
 const pool = require("../config/db");
+const {Course} = require('../models/course')
 // Get all courses
 getAllCourses = () => {
   return new Promise((resolve, reject) => {
-    pool.query(courseQueries.getAllProducts, (error, results) => {
+
+    Course.findAll().then((course)=>{
+      resolve(course)
+    }).then((err)=>{
+      reject(err)
+    })
+
+   /* pool.query(courseQueries.getAllProducts, (error, results) => {
       if (error) {
         reject(error);
       } else {
         resolve(results.rows);
       }
-    });
+    });*/
   });
 };
 getCourseBiId = (id) => {
@@ -34,16 +42,25 @@ checkRecordExists = (id)=>{
     });
   })
 }
-addNewProduct = (duration,title)=>{
+addNewProduct = (duration,title,noOfSkills)=>{
   return new Promise((resolve,reject)=>{
-    pool.query(courseQueries.createCourse, [duration, title], (error, result) => {
-      if(error){
-        reject(error)
-      }
-      else{
-        resolve(true)
-      }
-  })
+
+    Course.create({
+      title,duration,noOfSkills
+    }).then(()=>{
+      resolve(true)
+    }).catch((err)=>{
+      reject(err)
+    })
+
+  //   pool.query(courseQueries.createCourse, [duration, title], (error, result) => {
+  //     if(error){
+  //       reject(error)
+  //     }
+  //     else{
+  //       resolve(true)
+  //     }
+  // })
 
 })
 }

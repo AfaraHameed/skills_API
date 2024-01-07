@@ -25,8 +25,8 @@ getSingleCourses = asyncHandler(async (req, res, next) => {
 });
 
 createCourse = asyncHandler(async (req, res, next) => {
-  const { duration, title } = req.body;
-  const created = await courseRepository.addNewProduct(duration, title);
+  const { duration, title ,noOfSkills} = req.body;
+  const created = await courseRepository.addNewProduct(duration, title ,noOfSkills);
   if (created) {
     res.status(201).json({
       success: true,

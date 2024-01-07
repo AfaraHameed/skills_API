@@ -10,7 +10,9 @@ const {
 
 const {verifyTokenHandler,verifyRole} = require('../middlewares/jwtHandler')
 
-router.get("/",[verifyTokenHandler,verifyRole('admin')], getAllCourses);
+// router.get("/",[verifyTokenHandler,verifyRole('admin')], getAllCourses);
+router.get("/", getAllCourses);
+
 router.post("/", createCourse);
 
 router
